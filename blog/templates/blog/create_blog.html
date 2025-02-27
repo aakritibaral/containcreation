@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+    
+    {% include 'base.html' %} 
+
+    <div class="container">
+        <h1>Create a New Post</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="title">Post Title</label>
+                <input type="text" id="title" name="title" class="form-control" placeholder="Enter post title" value="{{ form.title.value }}">
+            </div>
+
+            <div class="form-group">
+                <label for="content">Post Content</label>
+                <textarea id="content" name="content" class="form-control" placeholder="Write your post content">{{ form.content.value }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category" class="form-control">
+                    <option value="Tech" {% if form.category.value == 'Tech' %}selected{% endif %}>Tech</option>
+                    <option value="Lifestyle" {% if form.category.value == 'Lifestyle' %}selected{% endif %}>Lifestyle</option>
+                    <option value="Travel" {% if form.category.value == 'Travel' %}selected{% endif %}>Travel</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="tags">Tags</label>
+                <input type="text" id="tags" name="tags" class="form-control" placeholder="Enter tags (comma separated)" value="{{ form.tags.value }}">
+            </div>
+
+            <div class="form-group">
+                <label for="image">Upload Image</label>
+                <input type="file" id="image" name="image" class="form-control" onchange="previewImage()">
+                <img id="imagePreview" src="#" alt="Image Preview" style="display: none; width: 100%; margin-top: 10px; border-radius: 8px;">
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="submit-btn">Publish Post</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function previewImage() {
+            const file = document.getElementById("image").files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById("imagePreview").style.display = "block";
+                document.getElementById("imagePreview").src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>

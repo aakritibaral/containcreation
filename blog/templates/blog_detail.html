@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.title }}</title>
+    <script>
+        function toggleLike(postId) {
+            fetch(`/blog/${postId}/like/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'  
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                const likeButton = document.getElementById(`like-button-${postId}`);
+                const likeCount = document.getElementById(`like-count-${postId}`);
+                if (data.liked) {
+                    likeButton.innerText = "Unlike";
+                } else {
+                    likeButton.innerText = "Like";
+                }
+                likeCount.innerText = data.like_count;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</head>
+<body>
+    <h1>{{ post.title }}</h1>
+    <p>{{ post.content }}</p>
+    <p>By {{ post.author.username }} on {{ post.created_at }}</p>
+
+    <h3>Comments</h3>
+    {% for comment in comments %}
+        <div>
+            <p>{{ comment.user.username }}: {{ comment.content }}</p>
+        </div>
+    {% empty %}
+        <p>No comments yet.</p>
+    {% endfor %}
+
+    <h4>Likes: <span id="like-count-{{ post.id }}">{{ post.like_set.count }}</span></h4>
+
+    
+    <button id="like-button-{{ post.id }}" onclick="toggleLike({{ post.id }})">
+        {% if request.user in post.likes.all %}
+            Unlike
+        {% else %}
+            Like
+        {% endif %}
+    </button>
+
+    <h3>Add Comment</h3>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}  
+        <button type="submit">Add Comment</button>
+    </form>
+
+</body>
+</html>

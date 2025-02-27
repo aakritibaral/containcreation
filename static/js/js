@@ -1,0 +1,28 @@
+document.addEventListener("DOMContentLoaded", function() {
+    const followBtn = document.getElementById("follow-btn");
+    const notification = document.getElementById("notification");
+
+    // Check if the user is already following (using localStorage or a Django session)
+    if (localStorage.getItem("isFollowing") === "true") {
+        followBtn.textContent = "Unfollow";
+        notification.textContent = "You will no longer receive notifications.";
+    }
+
+    // Button click event listener
+    followBtn.addEventListener("click", function() {
+        if (followBtn.textContent === "Follow Up") {
+            // User is following, change text and show notification
+            followBtn.textContent = "Unfollow";
+            notification.textContent = "Now you will receive notifications about new posts!";
+            localStorage.setItem("isFollowing", "true");  // Persist follow state in localStorage
+        } else {
+            // User is unfollowing, change text and hide notification
+            followBtn.textContent = "Follow Up";
+            notification.textContent = "You will no longer receive notifications.";
+            localStorage.setItem("isFollowing", "false");  // Persist unfollow state in localStorage
+        }
+
+        // Display the notification
+        notification.classList.remove("hidden");
+    });
+});

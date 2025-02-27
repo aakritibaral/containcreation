@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    {% if posts %}
+        {% for post in posts %}
+            <div class="post">
+                <h2>{{ post.title }}</h2>
+                <p>{{ post.content }}</p>
+
+                <!-- Like Button -->
+                <form method="POST" action="{% url 'blog:like_post' post.id %}">
+                    {% csrf_token %}
+                    <button type="submit">
+                        {% if user in post.likes.all %}
+                            Unlike
+                        {% else %}
+                            Like
+                        {% endif %}
+                    </button>
+                </form>
+
+                <p>{{ post.likes.count }} likes</p>
+
+               
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="post_id" value="{{ post.id }}">
+                    {{ comment_form.as_p }}  
+                    <button type="submit">Post Comment</button>
+                </form>
+
+           
+                <div class="comments">
+                    {% for comment in post.comments.all %}
+                        <div class="comment">
+                            <p><strong>{{ comment.author.username }}</strong>: {{ comment.content }}</p>
+                            <p>Posted on: {{ comment.created_at }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No posts available.</p>
+    {% endif %}
+{% endblock %}
