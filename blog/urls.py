@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = 'blog'  
 
@@ -20,8 +22,7 @@ urlpatterns = [
     path('signup/', views.signup_view, name='signup'),
     path('create/', views.create_post, name='create_blog'),
 
-]
-
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     
 
 
